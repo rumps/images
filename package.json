@@ -11,7 +11,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "merge": "^1.2.0",
+    "extend": "^2.0.0",
     "require-all": "^0.0.8",
     "gulp-changed": "^1.0.0",
     "gulp-clone": "^1.0.0",
