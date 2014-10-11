@@ -15,8 +15,12 @@ gulp.task('rump:info:images', function() {
                          rump.configs.main.paths.source.images);
   var destination = path.join(rump.configs.main.paths.destination.root,
                               rump.configs.main.paths.destination.images);
+  var action = rump.configs.main.environment === 'production' ?
+    util.colors.white('minified') + ' and copied' :
+    'copied';
 
-  util.log('Images are copied from', util.colors.green(source),
+  util.log('Images are', action,
+           'from', util.colors.green(source),
            'to', util.colors.green(destination));
 
   if(files.length) {
