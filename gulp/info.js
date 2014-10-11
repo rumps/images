@@ -16,11 +16,11 @@ gulp.task('rump:info:images', function() {
   var destination = path.join(rump.configs.main.paths.destination.root,
                               rump.configs.main.paths.destination.images);
   var action = rump.configs.main.environment === 'production' ?
-    util.colors.cyan('minified') + ' and copied' :
+    util.colors.yellow('minified') + ' and copied' :
     'copied';
 
-  util.log('Images are', action,
-           'from', util.colors.green(source),
+  util.log('Images from', util.colors.green(source),
+           'are', action,
            'to', util.colors.green(destination));
 
   if(files.length) {
@@ -30,7 +30,7 @@ gulp.task('rump:info:images', function() {
     files.forEach(function(file) {
       var message = util.colors.blue(path.relative(source, file));
 
-      if(/@2x$/.test(path.basename(file))) {
+      if(/@2x$/.test(path.basename(file, path.extname(file)))) {
         util.log(message, util.colors.yellow('*'));
       }
       else {
