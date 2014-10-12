@@ -19,27 +19,27 @@ gulp.task('rump:info:images', function() {
     chalk.yellow('minified') + ' and copied' :
     'copied';
 
+  if(!files.length) {
+    return;
+  }
+
   console.log();
   console.log(chalk.magenta('--- Images'));
   console.log('Images from', chalk.green(source),
               'are', action,
               'to', chalk.green(destination));
-
-  if(files.length) {
-    console.log('Affected files',
-                '(' + chalk.yellow('*'),
-                '- non-retina copies also generated):');
-    files.forEach(function(file) {
-      var message = chalk.blue(path.relative(source, file));
-
-      if(/@2x$/.test(path.basename(file, path.extname(file)))) {
-        console.log(message, chalk.yellow('*'));
-      }
-      else {
-        console.log(message);
-      }
-    });
-  }
+  console.log('Affected files',
+              '(' + chalk.yellow('*'),
+              '- non-retina copies also generated):');
+  files.forEach(function(file) {
+    var message = chalk.blue(path.relative(source, file));
+    if(/@2x$/.test(path.basename(file, path.extname(file)))) {
+      console.log(message, chalk.yellow('*'));
+    }
+    else {
+      console.log(message);
+    }
+  });
 
   console.log();
 });
