@@ -5,6 +5,7 @@ var globule = require('globule');
 var gulp = require('gulp');
 var path = require('path');
 var rump = require('rump');
+var pkg = require('../package');
 
 gulp.task('rump:info:images', function() {
   var glob = path.join(rump.configs.main.paths.source.root,
@@ -24,7 +25,7 @@ gulp.task('rump:info:images', function() {
   }
 
   console.log();
-  console.log(chalk.magenta('--- Images'));
+  console.log(chalk.magenta('--- Images', 'v' + pkg.version));
   console.log('Images from', chalk.green(source),
               'are', action,
               'to', chalk.green(destination));
