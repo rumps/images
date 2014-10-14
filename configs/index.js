@@ -6,7 +6,7 @@ var rump = require('rump');
 exports.rebuild = function() {
   rump.configs.main.globs = extend(true, {
     build: {
-      images: '*.{gif,jpg,jpeg,png}'
+      images: '**/*.{gif,jpg,jpeg,png}'
     },
     watch: {
       images: '**/*.{gif,jpg,jpeg,png}'
