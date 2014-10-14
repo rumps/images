@@ -29,10 +29,7 @@ gulp.task('rump:build:images', function() {
   .pipe(retinaFilter)
   .pipe(cloneSink)
   .pipe(gm(function(gmfile, done) {
-    gmfile.size(function(err, size) {
-      done(null, gmfile.resize(Math.ceil(size.width * 0.5),
-                               Math.ceil(size.height * 0.5)));
-    });
+    done(null, gmfile.resize('50%', '50%'));
   }))
   .pipe(rename(function(path) {
     path.basename = path.basename.replace(/@2x$/, '');
