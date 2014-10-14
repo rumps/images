@@ -1,5 +1,8 @@
 # Changelog
 
+#### WIP
+- Add SVG to default globs
+
 #### 0.2.1
 - Fix default glob so it capturs images in subdirectories
 - Add version information to info task
