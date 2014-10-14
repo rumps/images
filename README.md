@@ -36,7 +36,7 @@ Redefine options for Rump and Rump modules to follow. In addition to what
 options Rump and other Rump modules offer, the following options are
 available alongside default values:
 
-#### `options.paths.source.images` (`'images`)
+#### `options.paths.source.images` (`'images'`)
 This is the directory where images to be copied are contained. This path is
 relative to the root source path. (If the default root and images path is used,
 then the path would be `src/images`)
