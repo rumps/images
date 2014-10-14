@@ -2,7 +2,7 @@
   "name": "rump-images",
   "description": "Rump piece for handling images",
   "author": "Juan Placencia",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "homepage": "https://github.com/rumps/rump-images",
   "repository": {

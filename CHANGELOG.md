@@ -1,6 +1,6 @@
 # Changelog
 
-#### WIP
+#### 0.2.2
 - Add SVG to default globs
 - Update gulp-gm
 - Use 50% for resize parameter
