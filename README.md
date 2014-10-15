@@ -21,15 +21,16 @@ This module adds the following tasks:
 - `rump:build:images` will process and copy images from source to destination.
   This task is also added to the `rump:build` task. Images that end with `@2x`
   (`logo@2x.png`) will have copies made without the `@2x` (`logo.png`) and at
-  half the resolution of the original. If this is run under the production
-  environment, images will be minified for optimal size. For more information
-  on source and destination paths see `rump.configure()` below.
+  half the resolution of the original. For more information on source and
+  destination paths see `rump.configure()` below. This task is also added to
+  the `rump:build` task.
 - `rump:watch:images` will run `rump:build:static`, then monitor for changes
   and process updated files as needed. This task is also added to the
   `rump:watch` task.
 - `rump:info:images` will display information on what this specific module
   does, specifically the source and destination paths as well as what files
-  would get processed as well as those that would get retina copies.
+  would get processed as well as those that would get retina copies. This task
+  is also added to the `rump:info` task.
 
 ### `rump.configure(options)`
 Redefine options for Rump and Rump modules to follow. In addition to what
