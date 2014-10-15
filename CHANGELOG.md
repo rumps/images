@@ -1,6 +1,6 @@
 # Changelog
 
-#### WIP
+#### 0.2.3
 - Allow user to override whether to minify images
 
 #### 0.2.2
