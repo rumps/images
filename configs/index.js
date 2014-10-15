@@ -21,6 +21,10 @@ exports.rebuild = function() {
       images: 'images'
     }
   }, rump.configs.main.paths);
+
+  rump.configs.main.images = extend(true, {
+    minify: rump.configs.main.environment === 'production'
+  }, rump.configs.main.images);
 };
 
 exports.rebuild();

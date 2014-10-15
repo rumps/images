@@ -20,7 +20,6 @@ gulp.task('rump:build:images', function() {
                          rump.configs.main.globs.build.images);
   var destination = path.join(rump.configs.main.paths.destination.root,
                               rump.configs.main.paths.destination.images);
-  var production = rump.configs.main.environment === 'production';
 
   return gulp
   .src([source].concat(rump.configs.main.globs.global))
@@ -36,7 +35,7 @@ gulp.task('rump:build:images', function() {
   }))
   .pipe(retinaFilter.restore())
   .pipe(cloneSink.tap())
-  .pipe((production ? imagemin : util.noop)())
+  .pipe((rump.configs.main.images.minify ? imagemin : util.noop)())
   .pipe(gulp.dest(destination));
 });
 

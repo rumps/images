@@ -1,5 +1,8 @@
 # Changelog
 
+#### WIP
+- Allow user to override whether to minify images
+
 #### 0.2.2
 - Add SVG to default globs
 - Update gulp-gm
