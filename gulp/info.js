@@ -7,7 +7,7 @@ var path = require('path');
 var rump = require('rump');
 var pkg = require('../package');
 
-gulp.task('rump:info:images', function() {
+gulp.task(rump.taskName('info:images'), function() {
   var glob = path.join(rump.configs.main.paths.source.root,
                        rump.configs.main.paths.source.images,
                        rump.configs.main.globs.build.images);
@@ -45,4 +45,4 @@ gulp.task('rump:info:images', function() {
   console.log();
 });
 
-gulp.tasks['rump:info'].dep.push('rump:info:images');
+gulp.tasks[rump.taskName('info')].dep.push(rump.taskName('info:images'));

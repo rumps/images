@@ -12,7 +12,7 @@ var rename = require('gulp-rename');
 var rump = require('rump');
 var util = require('gulp-util');
 
-gulp.task('rump:build:images', function() {
+gulp.task(rump.taskName('build:images'), function() {
   var cloneSink = clone.sink();
   var retinaFilter = filter(['**/*@2x.*']);
   var source = path.join(rump.configs.main.paths.source.root,
@@ -39,4 +39,4 @@ gulp.task('rump:build:images', function() {
   .pipe(gulp.dest(destination));
 });
 
-gulp.tasks['rump:build'].dep.push('rump:build:images');
+gulp.tasks[rump.taskName('build')].dep.push(rump.taskName('build:images'));
