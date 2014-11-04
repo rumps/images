@@ -22,21 +22,21 @@ gulp.task(rump.taskName('build:images'), function() {
                               rump.configs.main.paths.destination.images);
 
   return gulp
-  .src([source].concat(rump.configs.main.globs.global))
-  .pipe((rump.configs.watch ? plumber : util.noop)())
-  .pipe((rump.configs.watch ? changed : util.noop)(destination))
-  .pipe(retinaFilter)
-  .pipe(cloneSink)
-  .pipe(gm(function(gmfile, done) {
-    done(null, gmfile.resize('50%', '50%'));
-  }))
-  .pipe(rename(function(path) {
-    path.basename = path.basename.replace(/@2x$/, '');
-  }))
-  .pipe(retinaFilter.restore())
-  .pipe(cloneSink.tap())
-  .pipe((rump.configs.main.images.minify ? imagemin : util.noop)())
-  .pipe(gulp.dest(destination));
+    .src([source].concat(rump.configs.main.globs.global))
+    .pipe((rump.configs.watch ? plumber : util.noop)())
+    .pipe((rump.configs.watch ? changed : util.noop)(destination))
+    .pipe(retinaFilter)
+    .pipe(cloneSink)
+    .pipe(gm(function(gmfile, done) {
+      done(null, gmfile.resize('50%', '50%'));
+    }))
+    .pipe(rename(function(path) {
+      path.basename = path.basename.replace(/@2x$/, '');
+    }))
+    .pipe(retinaFilter.restore())
+    .pipe(cloneSink.tap())
+    .pipe((rump.configs.main.images.minify ? imagemin : util.noop)())
+    .pipe(gulp.dest(destination));
 });
 
 gulp.tasks[rump.taskName('build')].dep.push(rump.taskName('build:images'));
