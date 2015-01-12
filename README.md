@@ -42,6 +42,10 @@ This specifies whether to process images through imagemin. (processed if
 production. (visit the main Rump repository for more information on
 environment)
 
+#### `options.images.imagemin`
+This specifies additional options for
+[gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin).
+
 #### `options.paths.source.images` (`'images'`)
 This is the directory where images to be copied are contained. This path is
 relative to the root source path. (If the default root and images path is used,

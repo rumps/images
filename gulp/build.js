@@ -14,6 +14,7 @@ var util = require('gulp-util');
 
 gulp.task(rump.taskName('build:images'), function() {
   var cloneSink = clone.sink();
+  var minify = rump.configs.main.images.minify;
   var retinaFilter = filter(['**/*@2x.*']);
   var source = path.join(rump.configs.main.paths.source.root,
                          rump.configs.main.paths.source.images,
@@ -35,7 +36,7 @@ gulp.task(rump.taskName('build:images'), function() {
     }))
     .pipe(retinaFilter.restore())
     .pipe(cloneSink.tap())
-    .pipe((rump.configs.main.images.minify ? imagemin : util.noop)())
+    .pipe((minify ? imagemin : util.noop)(rump.configs.main.images.imagemin))
     .pipe(gulp.dest(destination));
 });
 

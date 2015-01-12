@@ -3,6 +3,7 @@
 ### 0.6.0
 - Update to match Rump 0.6.0 (pass options)
 - Update `require-all`, `gulp-clone`, and `gulp-imagemin`
+- Add ability to pass options to `gulp-imagemin`
 
 ### 0.5.0
 - Update to match Rump 0.5.0 (use same minor version)
