@@ -4,6 +4,7 @@
 [![Travis](http://img.shields.io/travis/rumps/rump-images.svg?style=flat-square&label=travis)](https://travis-ci.org/rumps/rump-images)
 [![Appveyor](http://img.shields.io/appveyor/ci/jupl/rump-images.svg?style=flat-square&label=appveyor)](https://ci.appveyor.com/project/jupl/rump-images)
 [![Dependencies](http://img.shields.io/david/rumps/rump-images.svg?style=flat-square)](https://david-dm.org/rumps/rump-images)
+[![Dev Dependencies](http://img.shields.io/david/dev/rumps/rump-images.svg?style=flat-square)](https://david-dm.org/rumps/rump-images#info=devDependencies)
 
 
 ## About
