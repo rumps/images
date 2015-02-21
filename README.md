@@ -1,6 +1,8 @@
 # Rump Images
 [![NPM](http://img.shields.io/npm/v/rump-images.svg?style=flat-square)](https://www.npmjs.org/package/rump-images)
 ![License](http://img.shields.io/npm/l/rump-images.svg?style=flat-square)
+[![Travis](http://img.shields.io/travis/rumps/rump-images.svg?style=flat-square&label=travis)](https://travis-ci.org/rumps/rump-images)
+[![Appveyor](http://img.shields.io/appveyor/ci/jupl/rump-images.svg?style=flat-square&label=appveyor)](https://ci.appveyor.com/project/jupl/rump-images)
 [![Dependencies](http://img.shields.io/david/rumps/rump-images.svg?style=flat-square)](https://david-dm.org/rumps/rump-images)
 
 
