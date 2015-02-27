@@ -1,25 +1,23 @@
 'use strict';
 
-var assert = require('better-assert');
+// Temporary fix until old LoDash is updated in some Gulp dependency
+Object.getPrototypeOf.toString = function() {
+  return 'function getPrototypeOf() { [native code] }';
+};
+
+var assert = require('assert');
 var bufferEqual = require('buffer-equal');
-var fs = require('graceful-fs');
+var co = require('co');
+var fs = require('mz/fs');
 var gulp = require('gulp');
 var util = require('gulp-util');
 var imageSize = require('image-size');
-var any = require('lodash/collection/any');
-var toArray = require('lodash/lang/toArray');
 var path = require('path');
 var sinon = require('sinon');
+var sleep = require('timeout-then');
 var rump = require('../lib');
-var configs = require('../lib/configs');
 
 describe('rump images tasks', function() {
-  var original;
-
-  before(function() {
-    original = fs.readFileSync('test/src/image1.png');
-  });
-
   beforeEach(function() {
     rump.configure({
       paths: {
@@ -33,11 +31,6 @@ describe('rump images tasks', function() {
         }
       }
     });
-    configs.watch = false;
-  });
-
-  after(function() {
-    fs.writeFileSync('test/src/image1.png', original);
   });
 
   it('are added and defined', function() {
@@ -52,43 +45,69 @@ describe('rump images tasks', function() {
     assert(gulp.tasks['spec:watch:images']);
   });
 
-  it('info:images', function() {
+  it('display correct information in info task', function() {
     var oldLog = console.log;
     var logs = [];
     console.log = function() {
-      logs.push(util.colors.stripColor(toArray(arguments).join(' ')));
+      logs.push(util.colors.stripColor(Array.from(arguments).join(' ')));
     };
     gulp.start('spec:info');
     console.log = oldLog;
-    assert(any(logs, hasPaths));
-    assert(any(logs, hasImageFile));
-    assert(any(logs, hasRetinaImageFile));
+    assert(logs.some(hasPaths));
+    assert(logs.some(hasImageFile));
+    assert(logs.some(hasRetinaImageFile));
   });
 
-  it('build:images, watch:images', function(done) {
-    gulp.task('postbuild', ['spec:watch'], function() {
+  describe('for building', function() {
+    var original;
+
+    before(co.wrap(function*() {
+      original = yield fs.readFile('test/src/image1.png');
+    }));
+
+    before(function(done) {
+      gulp.task('postbuild', ['spec:watch'], function() {
+        done();
+      });
+      gulp.start('postbuild');
+    });
+
+    afterEach(co.wrap(function*() {
+      yield sleep(800);
+      yield fs.writeFile('test/src/image1.png', original);
+      yield sleep(800);
+    }));
+
+    it('handles updates', co.wrap(function*() {
+      var content = yield fs.readFile('tmp/image1.png');
+      assert(bufferEqual(content, original));
+      content = yield fs.readFile('test/new/image1.png');
+      yield sleep(800);
+      yield fs.writeFile('test/src/image1.png', content);
+      yield sleep(800);
+      content = yield fs.readFile('tmp/image1.png');
+      assert(!bufferEqual(original, content));
+    }));
+
+    it('handles retina images', function() {
       var size = imageSize('tmp/image2.jpg');
       var retinaSize = imageSize('tmp/image2@2x.jpg');
-      assert(bufferEqual(fs.readFileSync('tmp/image1.png'), original));
       assert(size.width * 2 === retinaSize.width);
       assert(size.height * 2 === retinaSize.height);
-      timeout(function() {
-        fs.writeFileSync('test/src/image1.png',
-                         fs.readFileSync('test/new/image1.png'));
-        timeout(function() {
-          assert(!bufferEqual(fs.readFileSync('tmp/image1.png'), original));
-          rump.reconfigure({environment: 'production'});
-          fs.writeFileSync('test/src/image1.png', original);
-          timeout(function() {
-            var sourceStat = fs.statSync('test/src/image1.png');
-            var destinationStat = fs.statSync('tmp/image1.png');
-            assert(sourceStat.size > destinationStat.size);
-            done();
-          }, 950);
-        }, 950);
-      }, 950);
     });
-    gulp.start('postbuild');
+
+    it('handles minification in production', co.wrap(function*() {
+      var sourceStat = yield fs.stat('test/src/image1.png');
+      var destinationStat = yield fs.stat('tmp/image1.png');
+      assert(sourceStat.size === destinationStat.size);
+      rump.reconfigure({environment: 'production'});
+      yield sleep(800);
+      yield fs.writeFile('test/src/image1.png', original);
+      yield sleep(800);
+      sourceStat = yield fs.stat('test/src/image1.png');
+      destinationStat = yield fs.stat('tmp/image1.png');
+      assert(sourceStat.size > destinationStat.size);
+    }));
   });
 });
 
@@ -101,13 +120,5 @@ function hasRetinaImageFile(log) {
 }
 
 function hasPaths(log) {
-  return ~log.indexOf(path.join('test', 'src')) && ~log.indexOf('tmp');
-}
-
-function timeout(cb, delay) {
-  process.nextTick(function() {
-    setTimeout(function() {
-      process.nextTick(cb);
-    }, delay || 0);
-  });
+  return log.includes(path.join('test', 'src')) && log.includes('tmp');
 }
