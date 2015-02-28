@@ -34,7 +34,7 @@ describe('rump images tasks', function() {
   });
 
   it('are added and defined', function() {
-    this.timeout(20000);
+    this.timeout(12000);
     var callback = sinon.spy();
     rump.on('gulp:main', callback);
     rump.on('gulp:images', callback);
