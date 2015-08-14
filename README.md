@@ -1,10 +1,25 @@
 # Rump Images
 [![NPM](http://img.shields.io/npm/v/rump-images.svg?style=flat-square)](https://www.npmjs.org/package/rump-images)
 ![License](http://img.shields.io/npm/l/rump-images.svg?style=flat-square)
-[![Travis](http://img.shields.io/travis/rumps/rump-images.svg?style=flat-square&label=travis)](https://travis-ci.org/rumps/rump-images)
+
+
+## Status
+
+### Master
+[![Dependencies](http://img.shields.io/david/rumps/images.svg?style=flat-square)](https://david-dm.org/rumps/images)
+[![Dev Dependencies](http://img.shields.io/david/dev/rumps/images.svg?style=flat-square)](https://david-dm.org/rumps/images#info=devDependencies)
+<br>
+[![Travis](http://img.shields.io/travis/rumps/images.svg?style=flat-square&label=travis)](https://travis-ci.org/rumps/images)
 [![Appveyor](http://img.shields.io/appveyor/ci/jupl/rump-images.svg?style=flat-square&label=appveyor)](https://ci.appveyor.com/project/jupl/rump-images)
-[![Dependencies](http://img.shields.io/david/rumps/rump-images.svg?style=flat-square)](https://david-dm.org/rumps/rump-images)
-[![Dev Dependencies](http://img.shields.io/david/dev/rumps/rump-images.svg?style=flat-square)](https://david-dm.org/rumps/rump-images#info=devDependencies)
+[![Codecov](http://img.shields.io/codecov/c/github/rumps/images.svg?style=flat-square&label=codecov)](https://codecov.io/github/rumps/images?view=all)
+
+### Develop
+[![Dependencies](http://img.shields.io/david/rumps/images/develop.svg?style=flat-square)](https://david-dm.org/rumps/images/develop)
+[![Dev Dependencies](http://img.shields.io/david/dev/rumps/images/develop.svg?style=flat-square)](https://david-dm.org/rumps/images/develop#info=devDependencies)
+<br>
+[![Travis](http://img.shields.io/travis/rumps/images/develop.svg?style=flat-square&label=travis)](https://travis-ci.org/rumps/images)
+[![Appveyor](http://img.shields.io/appveyor/ci/jupl/rump-images/develop.svg?style=flat-square&label=appveyor)](https://ci.appveyor.com/project/jupl/rump-images)
+[![Codecov](http://img.shields.io/codecov/c/github/rumps/images/develop.svg?style=flat-square&label=codecov)](https://codecov.io/github/rumps/images?branch=develop&view=all)
 
 
 ## About
@@ -12,7 +27,7 @@ Rump Images is a Rump module that handles images with support for image
 optimizations via [imagemin](https://github.com/imagemin/imagemin) and high
 density "retina" images. (retina support requires
 [GraphicsMagick](http://www.graphicsmagick.org/)) For more information, visit
-the [Rump repository](https://github.com/rumps/rump).
+the [core repository](https://github.com/rumps/core).
 
 
 ## API
@@ -27,7 +42,7 @@ task is also added to the `build` task. Images that end with `@2x`
 half the resolution of the original. For more information on source and
 destination paths see `rump.configure()` below. This task is also added to the
 `build` task.
-- `watch:images` will run `build:static`, then monitor for changes and process
+- `watch:images` will run `build:images`, then monitor for changes and process
 updated files as needed. This task is also added to the `watch` task.
 - `info:images` will display information on what this specific module does,
 specifically the source and destination paths as well as what files would get
