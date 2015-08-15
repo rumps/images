@@ -14,4 +14,4 @@ task(name('watch:images'), [name('build:images')], () => {
   watch([glob].concat(configs.main.globs.global), [name('build:images')])
 })
 
-tasks[rump.taskName('watch')].dep.push(rump.taskName('watch:images'))
+tasks[name('watch')].dep.push(name('watch:images'))
