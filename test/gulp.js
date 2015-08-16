@@ -12,6 +12,8 @@ import {spy} from 'sinon'
 const {stripColor} = colors
 
 describe('tasks', () => {
+  this.timeout(0)
+
   beforeEach(() => {
     rump.configure({paths: {
       source: {root: 'test/src', images: ''},
@@ -19,8 +21,7 @@ describe('tasks', () => {
     }})
   })
 
-  it('are added and defined', function() {
-    this.timeout(12000)
+  it('are added and defined', () => {
     const callback = spy()
     rump.on('gulp:main', callback)
     rump.on('gulp:images', callback)
@@ -58,18 +59,18 @@ describe('tasks', () => {
     })
 
     afterEach(async() => {
-      await timeout(800)
+      await timeout(1000)
       await writeFile('test/src/image1.png', original)
-      await timeout(800)
+      await timeout(1000)
     })
 
     it('handles updates', async() => {
       let content = await readFile('tmp/image1.png')
       bufferEqual(content, original).should.be.true()
       content = await readFile('test/new/image1.png')
-      await timeout(800)
+      await timeout(1000)
       await writeFile('test/src/image1.png', content)
-      await timeout(800)
+      await timeout(1000)
       content = await readFile('tmp/image1.png')
       bufferEqual(original, content).should.be.false()
     })
@@ -86,9 +87,9 @@ describe('tasks', () => {
           destinationStat = await stat('tmp/image1.png')
       sourceStat.size.should.equal(destinationStat.size)
       rump.reconfigure({environment: 'production'})
-      await timeout(800)
+      await timeout(1000)
       await writeFile('test/src/image1.png', original)
-      await timeout(800)
+      await timeout(1000)
       sourceStat = await stat('test/src/image1.png')
       destinationStat = await stat('tmp/image1.png')
       sourceStat.size.should.be.above(destinationStat.size)
