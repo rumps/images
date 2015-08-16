@@ -52,27 +52,29 @@ describe('tasks', function() {
   describe('for building', () => {
     let original
 
-    before(async(done) => {
+    before(async() => {
       original = await readFile('test/fixtures/src/image1.png')
-      gulp.task('postbuild', ['spec:watch'], () => done())
-      gulp.start('postbuild')
+      await new Promise(resolve => {
+        gulp.task('postbuild', ['spec:watch'], resolve)
+        gulp.start('postbuild')
+      })
     })
+
+    beforeEach(() => timeout(1000))
 
     afterEach(async() => {
       await timeout(1000)
       await writeFile('test/fixtures/src/image1.png', original)
-      await timeout(1000)
     })
 
     it('handles updates', async() => {
       let content = await readFile('tmp/image1.png')
-      bufferEqual(content, original).should.be.true()
+      bufferEqual(original, await readFile('tmp/image1.png')).should.be.true()
       content = await readFile('test/fixtures/new/image1.png')
       await timeout(1000)
       await writeFile('test/fixtures/src/image1.png', content)
       await timeout(1000)
-      content = await readFile('tmp/image1.png')
-      bufferEqual(original, content).should.be.false()
+      bufferEqual(original, await readFile('tmp/image1.png')).should.be.false()
     })
 
     it('handles retina images', () => {
@@ -89,9 +91,11 @@ describe('tasks', function() {
       rump.reconfigure({environment: 'production'})
       await timeout(1000)
       await writeFile('test/fixtures/src/image1.png', original)
-      await timeout(1000)
-      sourceStat = await stat('test/fixtures/src/image1.png')
-      destinationStat = await stat('tmp/image1.png')
+      await timeout(1000);
+      [sourceStat, destinationStat] = await Promise.all([
+        stat('test/fixtures/src/image1.png'),
+        stat('tmp/image1.png'),
+      ])
       sourceStat.size.should.be.above(destinationStat.size)
     })
   })

@@ -10,11 +10,11 @@ import rump from 'rump'
 import {noop} from 'gulp-util'
 import {join} from 'path'
 
-const {configs} = rump,
-      dest = ::gulp.dest,
+const dest = ::gulp.dest,
       name = ::rump.taskName,
       src = ::gulp.src,
-      task = ::gulp.task
+      task = ::gulp.task,
+      {configs} = rump
 
 task(name('build:images'), () => {
   const cloneSink = clone.sink(),

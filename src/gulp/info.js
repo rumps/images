@@ -5,10 +5,10 @@ import {colors} from 'gulp-util'
 import {basename, extname, join, relative} from 'path'
 import {version} from '../../package'
 
-const {blue, green, magenta, yellow} = colors,
-      {configs} = rump,
-      name = ::rump.taskName,
-      task = ::gulp.task
+const name = ::rump.taskName,
+      task = ::gulp.task,
+      {blue, green, magenta, yellow} = colors,
+      {configs} = rump
 
 task(name('info:images'), () => {
   const glob = join(configs.main.paths.source.root,
