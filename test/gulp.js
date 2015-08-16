@@ -62,10 +62,7 @@ describe('tasks', function() {
 
     beforeEach(() => timeout(1000))
 
-    afterEach(async() => {
-      await timeout(1000)
-      await writeFile('test/fixtures/src/image1.png', original)
-    })
+    afterEach(() => writeFile('test/fixtures/src/image1.png', original))
 
     it('handles updates', async() => {
       let content = await readFile('tmp/image1.png')
