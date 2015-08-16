@@ -11,7 +11,7 @@ import {spy} from 'sinon'
 
 const {stripColor} = colors
 
-describe('tasks', () => {
+describe('tasks', function() {
   this.timeout(0)
 
   beforeEach(() => {
