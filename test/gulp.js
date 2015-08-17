@@ -35,7 +35,7 @@ describe('tasks', function() {
   it('display correct information in info task', () => {
     const logs = [],
           {log} = console
-    console.log = (...args) => logs.push(stripColor(args.join(' ')))
+    console.log = newLog
     gulp.start('spec:info')
     console.log = log
     logs.slice(-7).should.eql([
@@ -47,6 +47,24 @@ describe('tasks', function() {
       'image2@2x.jpg *',
       '',
     ])
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info:prod')
+    console.log = log
+    logs.slice(-7).should.eql([
+      '',
+      '--- Images v0.7.0',
+      `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
+      'Affected files (* - non-retina copies also generated):',
+      'image1.png',
+      'image2@2x.jpg *',
+      '',
+    ])
+    rump.reconfigure({environment: 'development'})
+
+    function newLog(...args) {
+      logs.push(stripColor(args.join(' ')))
+    }
   })
 
   describe('for building', () => {
