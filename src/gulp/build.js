@@ -18,13 +18,13 @@ const dest = ::gulp.dest,
 
 task(name('build:images'), () => {
   const cloneSink = clone.sink(),
-        minify = configs.main.images.minify,
         retinaFilter = filter(['**/*@2x.*'], {restore: true}),
         source = join(configs.main.paths.source.root,
                       configs.main.paths.source.images,
                       configs.main.globs.build.images),
         destination = join(rump.configs.main.paths.destination.root,
-                           rump.configs.main.paths.destination.images)
+                           rump.configs.main.paths.destination.images),
+        {minify} = configs.main.images
   return src([source].concat(configs.main.globs.global))
     .pipe((rump.configs.watch ? plumber : noop)())
     .pipe((rump.configs.watch ? changed : noop)(destination))
