@@ -14,7 +14,7 @@ const {stripColor} = colors
 describe('tasks', function() {
   this.timeout(0)
 
-  beforeEach(() => {
+  afterEach(() => {
     rump.configure({paths: {
       source: {root: 'test/fixtures/src', images: ''},
       destination: {root: 'tmp', images: ''},
@@ -60,7 +60,12 @@ describe('tasks', function() {
       'image2@2x.jpg *',
       '',
     ])
-    rump.reconfigure({environment: 'development'})
+    rump.reconfigure({paths: {source: {images: 'nonexistant'}}})
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info')
+    console.log = log
+    logs.length.should.not.be.above(4)
 
     function newLog(...args) {
       logs.push(stripColor(args.join(' ')))
