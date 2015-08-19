@@ -5,7 +5,7 @@ import imageSize from 'image-size'
 import timeout from 'timeout-then'
 import rump from 'rump'
 import {colors} from 'gulp-util'
-import {readFile, stat, writeFile} from 'mz/fs'
+import {exists, readFile, stat, writeFile} from 'mz/fs'
 import {sep} from 'path'
 import {spy} from 'sinon'
 
@@ -72,14 +72,35 @@ describe('tasks', function() {
     }
   })
 
-  describe('for building', () => {
+  it('for building', async() => {
+    const originals = await Promise.all([
+      readFile('test/fixtures/src/image1.png'),
+      readFile('test/fixtures/src/image2@2x.jpg'),
+    ])
+    let contents, nonRetinaExists
+    await new Promise(resolve => {
+      gulp.task('postbuild', ['spec:build'], resolve)
+      gulp.start('postbuild')
+    })
+    contents = await Promise.all([
+      readFile('tmp/image1.png'),
+      readFile('tmp/image2@2x.jpg'),
+    ])
+    contents.forEach((content, index) => {
+      bufferEqual(originals[index], content).should.be.true()
+    })
+    nonRetinaExists = await exists('tmp/image2.jpg')
+    nonRetinaExists.should.be.true()
+  })
+
+  describe('for watching', () => {
     let original
 
     before(async() => {
       original = await readFile('test/fixtures/src/image1.png')
       await new Promise(resolve => {
-        gulp.task('postbuild', ['spec:watch'], resolve)
-        gulp.start('postbuild')
+        gulp.task('postwatch', ['spec:watch'], resolve)
+        gulp.start('postwatch')
       })
     })
 
