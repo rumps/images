@@ -1,4 +1,4 @@
-import gulp, {tasks} from 'gulp'
+import gulp, {dest, src, tasks} from 'gulp'
 import changed from 'gulp-changed'
 import clone from 'gulp-clone'
 import filter from 'gulp-filter'
@@ -10,9 +10,7 @@ import rump from 'rump'
 import {noop} from 'gulp-util'
 import {join} from 'path'
 
-const dest = ::gulp.dest,
-      name = ::rump.taskName,
-      src = ::gulp.src,
+const name = ::rump.taskName,
       task = ::gulp.task,
       {configs} = rump
 
