@@ -6,6 +6,8 @@
 - Add code coverage support
 - Update packages
 - Rewrite tests with ES2015+ and should.js
+- Added option to turn on/off retina image handling
+  - **BREAKING** By default turn off
 
 ### 0.6.1
 - Update packages

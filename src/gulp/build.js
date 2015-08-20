@@ -15,23 +15,30 @@ const name = ::rump.taskName,
       {configs} = rump
 
 task(name('build:images'), () => {
-  const cloneSink = clone.sink(),
-        retinaFilter = filter(['**/*@2x.*'], {restore: true}),
-        source = join(configs.main.paths.source.root,
+  const source = join(configs.main.paths.source.root,
                       configs.main.paths.source.images,
                       configs.main.globs.build.images),
         destination = join(rump.configs.main.paths.destination.root,
                            rump.configs.main.paths.destination.images),
         {minify} = configs.main.images
-  return src([source].concat(configs.main.globs.global))
-    .pipe((rump.configs.watch ? plumber : noop)())
-    .pipe((rump.configs.watch ? changed : noop)(destination))
-    .pipe(retinaFilter)
-    .pipe(cloneSink)
-    .pipe(gm((gmfile, done) => done(null, gmfile.resize('50%', '50%'))))
-    .pipe(rename(path => path.basename = path.basename.replace(/@2x$/, '')))
-    .pipe(retinaFilter.restore)
-    .pipe(cloneSink.tap())
+  let stream = src([source].concat(configs.main.globs.global))
+        .pipe((rump.configs.watch ? plumber : noop)())
+        .pipe((rump.configs.watch ? changed : noop)(destination))
+
+  // Clone retina images if available
+  if(configs.main.images.retina) {
+    const cloneSink = clone.sink(),
+          retinaFilter = filter(['**/*@2x.*'], {restore: true})
+    stream = stream
+      .pipe(retinaFilter)
+      .pipe(cloneSink)
+      .pipe(gm((gmfile, done) => done(null, gmfile.resize('50%', '50%'))))
+      .pipe(rename(path => path.basename = path.basename.replace(/@2x$/, '')))
+      .pipe(retinaFilter.restore)
+      .pipe(cloneSink.tap())
+  }
+
+  return stream
     .pipe((minify ? imagemin : noop)(configs.main.images.imagemin))
     .pipe(dest(destination))
 })

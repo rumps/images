@@ -15,10 +15,13 @@ describe('tasks', function() {
   this.timeout(0)
 
   afterEach(() => {
-    rump.configure({paths: {
-      source: {root: 'test/fixtures/src', images: ''},
-      destination: {root: 'tmp', images: ''},
-    }})
+    rump.configure({
+      paths: {
+        source: {root: 'test/fixtures/src', images: ''},
+        destination: {root: 'tmp', images: ''},
+      },
+      images: {retina: true},
+    })
   })
 
   it('are added and defined', () => {
@@ -58,6 +61,20 @@ describe('tasks', function() {
       'Affected files (* - non-retina copies also generated):',
       'image1.png',
       'image2@2x.jpg *',
+      '',
+    ])
+    rump.reconfigure({images: {retina: false}})
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info')
+    console.log = log
+    logs.slice(-7).should.eql([
+      '',
+      '--- Images v0.7.0',
+      `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
+      'Affected files:',
+      'image1.png',
+      'image2@2x.jpg',
       '',
     ])
     rump.reconfigure({paths: {source: {images: 'nonexistant'}}})

@@ -21,7 +21,8 @@ task(name('info:images'), () => {
                            configs.main.paths.destination.images),
         action = configs.main.environment === 'production'
           ? `${yellow('minified')} and copied`
-          : 'copied'
+          : 'copied',
+        {retina} = configs.main.images
   if(!files.length) {
     return
   }
@@ -29,11 +30,16 @@ task(name('info:images'), () => {
   console.log(magenta(`--- Images v${version}`))
   console.log(`Images from ${green(source)} are ${action}`,
               `to ${green(destination)}`)
-  console.log('Affected files',
-              `(${yellow('*')} - non-retina copies also generated):`)
+  if(retina) {
+    console.log('Affected files',
+                `(${yellow('*')} - non-retina copies also generated):`)
+  }
+  else {
+    console.log('Affected files:')
+  }
   files.forEach(file => {
     const message = blue(relative(source, file))
-    if(/@2x$/.test(basename(file, extname(file)))) {
+    if(retina && /@2x$/.test(basename(file, extname(file)))) {
       console.log(`${message} ${yellow('*')}`)
     }
     else {

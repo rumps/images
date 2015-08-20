@@ -61,6 +61,11 @@ This specifies whether to process images through imagemin. (processed if
 production. (visit the main Rump repository for more information on
 environment)
 
+#### `options.images.retina` (`false`)
+This specifies whether to create non-retina version of images. (denoted by
+`@2x`) By default this option is turned off. (If you turn on
+[GraphicsMagick](http://www.graphicsmagick.org/) is required)
+
 #### `options.images.imagemin`
 This specifies additional options for
 [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin).
