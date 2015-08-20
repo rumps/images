@@ -1,125 +1,160 @@
-'use strict';
+import '../src'
+import bufferEqual from 'buffer-equal'
+import gulp from 'gulp'
+import imageSize from 'image-size'
+import timeout from 'timeout-then'
+import rump from 'rump'
+import {colors} from 'gulp-util'
+import {exists, readFile, stat, writeFile} from 'mz/fs'
+import {sep} from 'path'
+import {spy} from 'sinon'
 
-// Temporary fix until old LoDash is updated in some Gulp dependency
-Object.getPrototypeOf.toString = function() {
-  return 'function getPrototypeOf() { [native code] }';
-};
+const {stripColor} = colors
 
-var assert = require('assert');
-var bufferEqual = require('buffer-equal');
-var co = require('co');
-var fs = require('mz/fs');
-var gulp = require('gulp');
-var util = require('gulp-util');
-var imageSize = require('image-size');
-var path = require('path');
-var sinon = require('sinon');
-var sleep = require('timeout-then');
-var rump = require('../lib');
+describe('tasks', function() {
+  this.timeout(0)
 
-describe('rump images tasks', function() {
-  beforeEach(function() {
+  afterEach(() => {
     rump.configure({
       paths: {
-        source: {
-          root: 'test/src',
-          images: ''
-        },
-        destination: {
-          root: 'tmp',
-          images: ''
-        }
-      }
-    });
-  });
+        source: {root: 'test/fixtures/src', images: ''},
+        destination: {root: 'tmp', images: ''},
+      },
+      images: {retina: true},
+    })
+  })
 
-  it('are added and defined', function() {
-    this.timeout(12000);
-    var callback = sinon.spy();
-    rump.on('gulp:main', callback);
-    rump.on('gulp:images', callback);
-    rump.addGulpTasks({prefix: 'spec'});
-    // TODO Remove no callback check on next major core update
-    assert(!callback.called || callback.calledTwice);
-    assert(gulp.tasks['spec:info:images']);
-    assert(gulp.tasks['spec:build:images']);
-    assert(gulp.tasks['spec:watch:images']);
-  });
+  it('are added and defined', () => {
+    const callback = spy()
+    rump.on('gulp:main', callback)
+    rump.on('gulp:images', callback)
+    rump.addGulpTasks({prefix: 'spec'})
+    callback.should.be.calledTwice()
+    gulp.tasks['spec:info:images'].should.be.ok()
+    gulp.tasks['spec:build:images'].should.be.ok()
+    gulp.tasks['spec:watch:images'].should.be.ok()
+  })
 
-  it('display correct information in info task', function() {
-    var oldLog = console.log;
-    var logs = [];
-    console.log = function() {
-      logs.push(util.colors.stripColor(Array.from(arguments).join(' ')));
-    };
-    gulp.start('spec:info');
-    console.log = oldLog;
-    assert(logs.some(hasPaths));
-    assert(logs.some(hasImageFile));
-    assert(logs.some(hasRetinaImageFile));
-  });
+  it('display correct information in info task', () => {
+    const logs = [],
+          {log} = console
+    console.log = newLog
+    gulp.start('spec:info')
+    console.log = log
+    logs.slice(-7).should.eql([
+      '',
+      '--- Images v0.7.0',
+      `Images from test${sep}fixtures${sep}src are copied to tmp`,
+      'Affected files (* - non-retina copies also generated):',
+      'image1.png',
+      'image2@2x.jpg *',
+      '',
+    ])
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info:prod')
+    console.log = log
+    logs.slice(-7).should.eql([
+      '',
+      '--- Images v0.7.0',
+      `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
+      'Affected files (* - non-retina copies also generated):',
+      'image1.png',
+      'image2@2x.jpg *',
+      '',
+    ])
+    rump.reconfigure({images: {retina: false}})
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info')
+    console.log = log
+    logs.slice(-7).should.eql([
+      '',
+      '--- Images v0.7.0',
+      `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
+      'Affected files:',
+      'image1.png',
+      'image2@2x.jpg',
+      '',
+    ])
+    rump.reconfigure({paths: {source: {images: 'nonexistant'}}})
+    logs.length = 0
+    console.log = newLog
+    gulp.start('spec:info')
+    console.log = log
+    logs.length.should.not.be.above(4)
 
-  describe('for building', function() {
-    var original;
+    function newLog(...args) {
+      logs.push(stripColor(args.join(' ')))
+    }
+  })
 
-    before(co.wrap(function*() {
-      original = yield fs.readFile('test/src/image1.png');
-    }));
+  it('for building', async() => {
+    const originals = await Promise.all([
+      readFile('test/fixtures/src/image1.png'),
+      readFile('test/fixtures/src/image2@2x.jpg'),
+    ])
+    let contents, nonRetinaExists
+    await new Promise(resolve => {
+      gulp.task('postbuild', ['spec:build'], resolve)
+      gulp.start('postbuild')
+    })
+    contents = await Promise.all([
+      readFile('tmp/image1.png'),
+      readFile('tmp/image2@2x.jpg'),
+    ])
+    contents.forEach((content, index) => {
+      bufferEqual(originals[index], content).should.be.true()
+    })
+    nonRetinaExists = await exists('tmp/image2.jpg')
+    nonRetinaExists.should.be.true()
+  })
 
-    before(function(done) {
-      gulp.task('postbuild', ['spec:watch'], function() {
-        done();
-      });
-      gulp.start('postbuild');
-    });
+  describe('for watching', () => {
+    let original
 
-    afterEach(co.wrap(function*() {
-      yield sleep(800);
-      yield fs.writeFile('test/src/image1.png', original);
-      yield sleep(800);
-    }));
+    before(async() => {
+      original = await readFile('test/fixtures/src/image1.png')
+      await new Promise(resolve => {
+        gulp.task('postwatch', ['spec:watch'], resolve)
+        gulp.start('postwatch')
+      })
+    })
 
-    it('handles updates', co.wrap(function*() {
-      var content = yield fs.readFile('tmp/image1.png');
-      assert(bufferEqual(content, original));
-      content = yield fs.readFile('test/new/image1.png');
-      yield sleep(800);
-      yield fs.writeFile('test/src/image1.png', content);
-      yield sleep(800);
-      content = yield fs.readFile('tmp/image1.png');
-      assert(!bufferEqual(original, content));
-    }));
+    beforeEach(() => timeout(1000))
 
-    it('handles retina images', function() {
-      var size = imageSize('tmp/image2.jpg');
-      var retinaSize = imageSize('tmp/image2@2x.jpg');
-      assert(size.width * 2 === retinaSize.width);
-      assert(size.height * 2 === retinaSize.height);
-    });
+    afterEach(() => writeFile('test/fixtures/src/image1.png', original))
 
-    it('handles minification in production', co.wrap(function*() {
-      var sourceStat = yield fs.stat('test/src/image1.png');
-      var destinationStat = yield fs.stat('tmp/image1.png');
-      assert(sourceStat.size === destinationStat.size);
-      rump.reconfigure({environment: 'production'});
-      yield sleep(800);
-      yield fs.writeFile('test/src/image1.png', original);
-      yield sleep(800);
-      sourceStat = yield fs.stat('test/src/image1.png');
-      destinationStat = yield fs.stat('tmp/image1.png');
-      assert(sourceStat.size > destinationStat.size);
-    }));
-  });
-});
+    it('handles updates', async() => {
+      let content = await readFile('tmp/image1.png')
+      bufferEqual(original, await readFile('tmp/image1.png')).should.be.true()
+      content = await readFile('test/fixtures/new/image1.png')
+      await timeout(1000)
+      await writeFile('test/fixtures/src/image1.png', content)
+      await timeout(1000)
+      bufferEqual(original, await readFile('tmp/image1.png')).should.be.false()
+    })
 
-function hasImageFile(log) {
-  return log === 'image1.png';
-}
+    it('handles retina images', () => {
+      const {width, height} = imageSize('tmp/image2.jpg'),
+            retinaSize = imageSize('tmp/image2@2x.jpg')
+      retinaSize.width.should.equal(width * 2)
+      retinaSize.height.should.equal(height * 2)
+    })
 
-function hasRetinaImageFile(log) {
-  return log === 'image2@2x.jpg *';
-}
-
-function hasPaths(log) {
-  return log.includes(path.join('test', 'src')) && log.includes('tmp');
-}
+    it('handles minification in production', async() => {
+      let sourceStat = await stat('test/fixtures/src/image1.png'),
+          destinationStat = await stat('tmp/image1.png')
+      sourceStat.size.should.equal(destinationStat.size)
+      rump.reconfigure({environment: 'production'})
+      await timeout(1000)
+      await writeFile('test/fixtures/src/image1.png', original)
+      await timeout(1000);
+      [sourceStat, destinationStat] = await Promise.all([
+        stat('test/fixtures/src/image1.png'),
+        stat('tmp/image1.png'),
+      ])
+      sourceStat.size.should.be.above(destinationStat.size)
+    })
+  })
+})
