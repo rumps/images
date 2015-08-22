@@ -1,6 +1,6 @@
 {
   "name": "rump-images",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": "Juan Placencia",
   "description": "Rump piece for handling images",
   "license": "MIT",
@@ -33,6 +33,7 @@
     "test": "mocha"
   },
   "dependencies": {
+    "babel-runtime": "^5.8.20",
     "extend": "^3.0.0",
     "globule": "^0.2.0",
     "gulp-changed": "^1.0.0",
@@ -47,16 +48,17 @@
   "devDependencies": {
     "babel": "^5.8.19",
     "babel-eslint": "^4.0.5",
+    "bluebird": "^2.9.34",
     "buffer-equal": "^0.0.1",
     "codecov.io": "^0.1.5",
     "eslint": "^1.0.0",
-    "gulp": "^3.9.0",
     "graceful-fs": "^4.1.2",
+    "gulp": "^3.9.0",
     "image-size": "^0.3.5",
     "isparta": "^3.0.3",
     "mocha": "^2.2.5",
     "mz": "^2.0.0",
-    "rump": "^0.7.6",
+    "rump": "^0.8.0",
     "should": "^7.0.2",
     "should-sinon": "0.0.3",
     "sinon": "^1.15.4",

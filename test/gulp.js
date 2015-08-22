@@ -43,7 +43,7 @@ describe('tasks', function() {
     console.log = log
     logs.slice(-7).should.eql([
       '',
-      '--- Images v0.7.0',
+      '--- Images v0.8.0',
       `Images from test${sep}fixtures${sep}src are copied to tmp`,
       'Affected files (* - non-retina copies also generated):',
       'image1.png',
@@ -56,7 +56,7 @@ describe('tasks', function() {
     console.log = log
     logs.slice(-7).should.eql([
       '',
-      '--- Images v0.7.0',
+      '--- Images v0.8.0',
       `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
       'Affected files (* - non-retina copies also generated):',
       'image1.png',
@@ -70,7 +70,7 @@ describe('tasks', function() {
     console.log = log
     logs.slice(-7).should.eql([
       '',
-      '--- Images v0.7.0',
+      '--- Images v0.8.0',
       `Images from test${sep}fixtures${sep}src are minified and copied to tmp`,
       'Affected files:',
       'image1.png',
