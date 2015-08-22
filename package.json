@@ -10,6 +10,16 @@
     "type": "git",
     "url": "https://github.com/rumps/images"
   },
+  "keywords": [
+    "gm",
+    "gulp-gm",
+    "gulp",
+    "gulp-imagemin",
+    "imagemin",
+    "images",
+    "rump",
+    "rump-module"
+  ],
   "scripts": {
     "preci": "npm run lint",
     "ci": "babel-node node_modules/.bin/isparta cover --report json _mocha",
