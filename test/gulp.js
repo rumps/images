@@ -11,7 +11,7 @@ import {spy} from 'sinon'
 
 const {stripColor} = colors
 
-describe('tasks', function() {
+describe('tasks', function describeTasks() {
   this.timeout(0)
 
   afterEach(() => {
@@ -36,8 +36,8 @@ describe('tasks', function() {
   })
 
   it('display correct information in info task', () => {
-    const logs = [],
-          {log} = console
+    const logs = []
+    const {log} = console
     console.log = newLog
     gulp.start('spec:info')
     console.log = log
@@ -94,7 +94,8 @@ describe('tasks', function() {
       readFile('test/fixtures/src/image1.png'),
       readFile('test/fixtures/src/image2@2x.jpg'),
     ])
-    let contents, nonRetinaExists
+    let contents
+    let nonRetinaExists
     await new Promise(resolve => {
       gulp.task('postbuild', ['spec:build'], resolve)
       gulp.start('postbuild')
@@ -136,15 +137,15 @@ describe('tasks', function() {
     })
 
     it('handles retina images', () => {
-      const {width, height} = imageSize('tmp/image2.jpg'),
-            retinaSize = imageSize('tmp/image2@2x.jpg')
+      const {width, height} = imageSize('tmp/image2.jpg')
+      const retinaSize = imageSize('tmp/image2@2x.jpg')
       retinaSize.width.should.equal(width * 2)
       retinaSize.height.should.equal(height * 2)
     })
 
     it('handles minification in production', async() => {
-      let sourceStat = await stat('test/fixtures/src/image1.png'),
-          destinationStat = await stat('tmp/image1.png')
+      let sourceStat = await stat('test/fixtures/src/image1.png')
+      let destinationStat = await stat('tmp/image1.png')
       sourceStat.size.should.equal(destinationStat.size)
       rump.reconfigure({environment: 'production'})
       await timeout(1000)

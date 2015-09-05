@@ -10,25 +10,25 @@ import rump from 'rump'
 import {noop} from 'gulp-util'
 import {join} from 'path'
 
-const name = ::rump.taskName,
-      task = ::gulp.task,
-      {configs} = rump
+const name = ::rump.taskName
+const task = ::gulp.task
+const {configs} = rump
 
 task(name('build:images'), () => {
   const source = join(configs.main.paths.source.root,
                       configs.main.paths.source.images,
-                      configs.main.globs.build.images),
-        destination = join(rump.configs.main.paths.destination.root,
-                           rump.configs.main.paths.destination.images),
-        {minify} = configs.main.images
+                      configs.main.globs.build.images)
+  const destination = join(rump.configs.main.paths.destination.root,
+                           rump.configs.main.paths.destination.images)
+  const {minify} = configs.main.images
   let stream = src([source].concat(configs.main.globs.global))
         .pipe((rump.configs.watch ? plumber : noop)())
         .pipe((rump.configs.watch ? changed : noop)(destination))
 
   // Clone retina images if available
   if(configs.main.images.retina) {
-    const cloneSink = clone.sink(),
-          retinaFilter = filter(['**/*@2x.*'], {restore: true})
+    const cloneSink = clone.sink()
+    const retinaFilter = filter(['**/*@2x.*'], {restore: true})
     stream = stream
       .pipe(retinaFilter)
       .pipe(cloneSink)
