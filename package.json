@@ -6,10 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/rumps/images",
   "main": "./lib",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rumps/images"
-  },
+  "repository": "rumps/images",
   "keywords": [
     "gm",
     "gulp-gm",
