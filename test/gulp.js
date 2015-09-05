@@ -82,7 +82,7 @@ describe('tasks', function describeTasks() {
     console.log = newLog
     gulp.start('spec:info')
     console.log = log
-    logs.length.should.not.be.above(4)
+    logs.length.should.not.be.above(5)
 
     function newLog(...args) {
       logs.push(stripColor(args.join(' ')))
